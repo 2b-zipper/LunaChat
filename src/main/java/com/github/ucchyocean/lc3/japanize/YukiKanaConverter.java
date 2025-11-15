@@ -373,7 +373,32 @@ public class YukiKanaConverter {
      * @since 2.8.10
      */
     public static String conv(String romaji) {
-        return replaceEach(romaji, ROMAJI_LIST, HIRAGANA_LIST);
+        StringBuilder result = new StringBuilder();
+        int i = 0;
+        String lowerRomaji = romaji.toLowerCase();
+        
+        while (i < lowerRomaji.length()) {
+            boolean matched = false;
+            
+            for (int len = Math.min(5, lowerRomaji.length() - i); len >= 1; len--) {
+                String substr = lowerRomaji.substring(i, i + len);
+                String hiragana = MAP.get(substr);
+                
+                if (hiragana != null) {
+                    result.append(hiragana);
+                    i += len;
+                    matched = true;
+                    break;
+                }
+            }
+            
+            if (!matched) {
+                result.append(romaji.charAt(i));
+                i++;
+            }
+        }
+        
+        return result.toString();
     }
 
     /**
